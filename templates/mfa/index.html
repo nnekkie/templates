@@ -1,0 +1,115 @@
+{% extends '../account/partials/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load allauth %}
+{% load widget_tweaks %}
+{% load socialaccount %}
+{% block content %}
+<div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            2FA Authentication
+        </h1>
+        <form class="space-y-4 md:space-y-6" method="post">
+            {% csrf_token %}
+
+            {% if "totp" in MFA_SUPPORTED_TYPES %}
+
+            {% if authenticators.totp %}
+            <div id="toast-simple" class="flex items-center w-full max-w-xs p-4 space-x-4 rtl:space-x-reverse text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">
+                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+
+                <div class="ps-4 text-sm font-normal">
+                    Authentication via an authenticator app is currently enabled.</div>
+            </div>
+            <a href="{% url 'mfa_deactivate_totp' %}">
+            <button type="button" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" style="background-image: none; background-color: #1D4ED8 !important;">Disable</button>
+            </a>
+            {% else  %}
+            <div id="toast-simple" class="flex items-center w-full max-w-xs p-4 space-x-4 rtl:space-x-reverse text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">
+                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+
+                <div class="ps-4 text-sm font-normal">
+                    Authentication via an authenticator app is currently not enabled.</div>
+            </div>
+            <a href="{% url 'mfa_activate_totp' %}" >
+            <button type="button" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" style="background-image: none; background-color: #1D4ED8 !important;">Enable</button>
+            </a>
+            {% endif %}
+            {% endif %}
+
+            
+         
+            {% if "recovery_codes" in MFA_SUPPORTED_TYPES %}
+                {% with total_count=authenticators.recovery_codes.generate_codes|length unused_count=authenticators.recovery_codes.get_unused_codes|length %}
+                <div class="relative z-0">
+                    <input type="text" id="disabled_standard" class="text-center block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " disabled />
+                    <label  for="disabled_standard" class="absolute text-sm text-gray-400 dark:text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto text-center left-1/2 -translate-x-1/2">
+                        Recovery Codes
+                    </label>
+
+
+                </div>
+                
+                <div id="toast-simple" class="flex items-center w-full max-w-xs p-4 space-x-4 rtl:space-x-reverse text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800" role="alert">
+                    
+    
+                    <div class="ps-4 text-sm font-normal">
+                        {% if authenticators.recovery_codes %}
+                            {% blocktrans count unused_count=unused_count %}
+                                {{ unused_count }} of {{ total_count }} recovery codes are available.
+                            {% plural %}
+                                {{ unused_count }} of {{ total_count }} recovery codes are available.
+                            {% endblocktrans %}
+                        {% else %}
+                            <p>Recovery codes are not set up. Please configure them to secure your account.</p>
+                        {% endif %}
+
+
+                    </div>
+                </div>
+                {% if is_mfa_enabled %}
+                    {% if authenticators.recovery_codes %}
+                        <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" role="tablist">
+                                <li class="me-2" role="presentation">
+                                    <a href="{% url 'mfa_generate_recovery_codes' %}">
+                                        <button class="inline-block p-4 border-b-2 rounded-t-lg text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-gray-500 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 focus:outline-none" id="profile-tab" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                                            Generate
+                                        </button>
+                                    </a>
+                                </li>
+                                <li class="me-2" role="presentation">
+                                    <a href="{% url 'mfa_view_recovery_codes' %}">
+                                        <button class="inline-block p-4 border-b-2 rounded-t-lg text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-gray-500 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 focus:outline-none" id="dashboard-tab" type="button" role="tab" aria-controls="dashboard" aria-selected="false">
+                                            View
+                                        </button>
+                                    </a>
+                                </li>
+                                <li class="me-2" role="presentation">
+                                    <a href="{% url 'mfa_download_recovery_codes' %}">
+                                        <button class="inline-block p-4 border-b-2 rounded-t-lg text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 hover:border-gray-300 dark:hover:border-gray-500 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 focus:outline-none" id="settings-tab" type="button" role="tab" aria-controls="settings" aria-selected="false">
+                                            Download
+                                        </button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% endwith %}
+            {% endif %}
+
+
+            
+        </form>
+    </div>
+</div>
+{% endblock %}

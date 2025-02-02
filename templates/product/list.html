@@ -1,0 +1,41 @@
+{% extends 'partials/base.html' %}
+{% block title %} Nnekkie | Mart Home {% endblock %}
+{% block content %}
+<div class="main_content">
+    <div class="container flex flex-wrap items-center justify-between mx-auto">
+    
+        <section class="mt-9 lg:w-3/4 lg:px-30 space-y-7" >
+
+            {% include 'base/navbar.html' %}
+        
+            <div class="card lg:mx-0 uk-animation-slide-bottom-small mb-3">
+                <section class="bg-white dark:bg-gray-900 ">
+                    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
+                        <div class="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
+                            <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Get Your Learning Resources </h2>
+                            <p class="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">Explore the complete collection of educational resources and tools designed for a social learning experience.</p>
+                        </div> 
+
+                        
+                        <div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
+                            
+                            {% for product in product_list %}
+                            {% include 'product/list-card.html' with product=product %}
+                            {% endfor %}
+                            
+                            
+                        </div>  
+                    </div>
+                </section>
+            </div>
+            
+        
+            
+            {% include 'base/js.html' %}
+             
+        </section>
+    </div>
+</div>
+
+
+{% endblock %}

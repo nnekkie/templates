@@ -1,0 +1,72 @@
+{% extends "./base.html" %}
+{% load i18n %}
+{% load allauth %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="lg:flex max-w-5xl min-h-screen mx-auto p-6 py-10">
+    <div class="flex flex-col items-center lg:flex-row lg:space-x-10">
+
+        <!-- Branding Section -->
+        <div class="lg:mb-12 flex-1 lg:text-left text-center">
+            <img src="{% static 'assets/images/logo.png' %}" alt="Logo" class="lg:mx-0 lg:w-52 mx-auto w-40">
+            <p class="font-medium lg:mx-0 md:text-2xl mt-6 mx-auto sm:w-3/4 text-xl">
+                Learning is made easier with fun.
+            </p>
+        </div>
+
+        <!-- Login Section -->
+        <div class="lg:mt-0 lg:w-96 md:w-1/2 sm:w-2/3 mt-10 w-full">
+            <form method="post" class="p-6 space-y-4 relative bg-white shadow-lg rounded-lg">
+                <p class="font-medium lg:mx-0 md:text-2xl mt-6 mx-auto sm:w-3/4 text-xl">
+                    Your account Recovery code.
+                </p>
+                {% csrf_token %}
+                <main>
+                    <section class="pt-5 pb-5">
+                        <div class="container">
+                            <div class="row mt-0 mt-md-4">
+                                <div class="col-lg-12 col-md-12 col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                
+                                            <h1>{% trans "Recovery Codes" %}</h1>
+                
+                                            {% blocktrans count unused_count=unused_codes|length %}
+                                                There is {{ unused_count }} out of {{ total_count }} recovery codes available.
+                                            {% plural %}
+                                                There are {{ unused_count }} out of {{ total_count }} recovery codes available.
+                                            {% endblocktrans %}
+                
+                                            <br>
+                                            <span>Unused Code</span>
+                                            <textarea id="recovery_codes" rows="{{ unused_codes|length }}" readonly disabled>
+                                                {% for code in unused_codes %}
+                                                    {{ code }}
+                                                {% endfor %}
+                                            </textarea>
+                                            <hr class="pb-3.5">
+                                            <hr class="pb-3.5">
+                                            {% if unused_codes %}
+                                                <a href="{% url 'mfa_download_recovery_codes' %}" class="btn btn-primary">
+                                                    {% trans "Download codes" %}
+                                                </a>
+                                            {% endif %}
+                
+                                            <a href="{% url 'mfa_generate_recovery_codes' %}" class="btn btn-secondary">
+                                                {% trans "Generate new codes" %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

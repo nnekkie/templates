@@ -1,0 +1,4 @@
+{{ object.name }}
+{{object.file}}
+{{ object.is_free }}
+{{ object.description }}

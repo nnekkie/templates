@@ -1,0 +1,46 @@
+{% extends "./base.html" %}
+{% load allauth %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="lg:flex max-w-5xl min-h-screen mx-auto p-6 py-10">
+    <div class="flex flex-col items-center lg:flex-row lg:space-x-10">
+
+        <!-- Branding Section -->
+        <div class="lg:mb-12 flex-1 lg:text-left text-center">
+            <img src="{% static 'assets/images/logo.png' %}" alt="Logo" class="lg:mx-0 lg:w-52 mx-auto w-40">
+            <p class="font-medium lg:mx-0 md:text-2xl mt-6 mx-auto sm:w-3/4 text-xl">
+                Learning is made easier with fun.
+            </p>
+        </div>
+
+        <!-- Login Section -->
+        <div class="lg:mt-0 lg:w-96 md:w-1/2 sm:w-2/3 mt-10 w-full">
+            <form method="post" class="p-6 space-y-4 relative bg-white shadow-lg rounded-lg">
+                <p class="font-medium lg:mx-0 md:text-1xl mt-6 mx-auto sm:w-3/4 text-xl">
+                    Deactivate authentication app
+                </p>
+                <p> To deactivate two-factor authentication for your account, please confirm your identity. Enter the latest verification code from your authenticator app below to proceed with deactivation. </p>
+                {% csrf_token %}
+       
+                    <br>
+                    <div class="flex">
+                        <button type="submit" uk-toggle class="bg-green-600 hover:bg-green-500 hover:text-white font-semibold py-3 px-5 rounded-md text-center text-white mx-auto">
+                            Deactivate
+                        </button>
+                    </div>
+                </div>
+               
+                
+
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock content %}

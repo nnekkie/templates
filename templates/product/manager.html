@@ -1,0 +1,77 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="main_content">
+    <div class="container flex flex-wrap items-center justify-between mx-auto">
+    
+        <section class="mt-9 lg:w-3/4 lg:px-30 space-y-7" >
+        
+            <div class="card lg:mx-0 uk-animation-slide-bottom-small mb-3">
+
+                <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg space-y-6">
+                    <form class="space-y-6" method="POST" action="." enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="space-y-4">
+                            <h2 class="text-xl font-semibold text-gray-800">Create Product</h2>
+                            {{ form.as_p }}
+                        </div>
+
+                        <div>
+                            {{ formset.management_form }}
+                            <div class="pb-4 border-b space-y-4" id="attachments">
+                                <h3 class="text-lg font-semibold text-gray-700">Attachments</h3>
+                                {% for form in formset %}
+                                    <div class="space-y-4 bg-gray-50 p-4 rounded-md shadow-sm">
+                                        {{ form.as_p }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="space-x-3">
+                            <button class="btn-submit mt-4 inline-block py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" id="add-attachment-btn">Add Attachment</button>
+                            <button type="submit" class="btn-submit mt-4 inline-block py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Save</button>
+                        </div>
+                    </form>
+
+                    <div class="hidden" id="blank-form">
+                        {{ formset.empty_form }}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    const blankFormEl = document.querySelector("#blank-form")
+    const attachmentContainer = document.querySelector("#attachments")
+    const addAttachmentBtn = document.querySelector("#add-attachment-btn")
+    const managementFormInputEl = document.querySelector("#id_form-TOTAL_FORMS")
+
+    addAttachmentBtn.addEventListener("click", handleAttachmentBtnClick)
+
+    function cloneBlankForm() {
+        if (blankFormEl) {
+            const newBlankForm = blankFormEl.cloneNode(true)
+            const totalFormValue = parseInt(managementFormInputEl.value)
+            var formRegex = new RegExp(`__prefix__`, 'g');
+            newBlankForm.innerHTML = newBlankForm.innerHTML.replace(formRegex, totalFormValue)
+            managementFormInputEl.value = totalFormValue + 1
+            newBlankForm.classList.add("attachment-form")
+            newBlankForm.classList.remove("hidden")
+            newBlankForm.removeAttribute("id")
+            return newBlankForm
+        }
+    }
+
+    function handleAttachmentBtnClick(event) {
+        if (event){
+            event.preventDefault()
+        }
+        const newForm = cloneBlankForm()
+        attachmentContainer.appendChild(newForm)
+    }
+</script>
+
+{% endblock %}

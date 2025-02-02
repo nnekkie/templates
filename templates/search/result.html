@@ -1,0 +1,21 @@
+
+
+
+    <h1>Search Results</h1>
+    {% if query %}
+        <p>Your search query: "{{ query }}"</p>
+        {% if results %}
+            <ul>
+                {% for result in results %}
+                    <li>
+                        <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No results found for "{{ query }}".</p>
+        {% endif %}
+    {% else %}
+        <p>Please enter a search term.</p>
+    {% endif %}
+

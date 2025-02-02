@@ -1,0 +1,27 @@
+{% extends 'partials/base.html' %}
+
+{% block title %} Nnekkie | Mart {% endblock %}
+{% block content %}
+<div class="main_content">
+    <div class="container flex flex-wrap items-center justify-between mx-auto">
+    
+        <section class="mt-9 lg:w-3/4 lg:px-30 space-y-7" >
+        
+            <div class="card lg:mx-0 uk-animation-slide-bottom-small mb-3">
+
+
+                <div class="max-w-4xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-6">Create Product</h2>
+                    <form action="." method="POST" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="space-y-2">
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Create Product</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

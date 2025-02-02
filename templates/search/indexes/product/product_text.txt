@@ -1,0 +1,4 @@
+{{ object.name }}
+{{ object.handle }}
+{{object.get_image_url}}
+{{ object.description }}
